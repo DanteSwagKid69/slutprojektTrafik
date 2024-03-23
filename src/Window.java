@@ -2,9 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Array;
 import java.util.ArrayList;
-import java.util.RandomAccess;
-import java.util.random.RandomGenerator;
 
 public class Window extends JFrame implements ActionListener {
 
@@ -34,14 +33,14 @@ public class Window extends JFrame implements ActionListener {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 
 
-
-
     };
 
     private int rows = mapArray.length;
     private int columns = mapArray[0].length;
 
     final int pixelSize = 20;
+
+    int frames = 0;
 
 
     ArrayList<Tile> tilesList = new ArrayList<>();
@@ -50,7 +49,8 @@ public class Window extends JFrame implements ActionListener {
 
 
     public Window() {
-
+        // generateRoadNetwork();
+        // genMap();
         generateMap();
         System.out.println("Y: " + mapArray.length + " | " + " x: " + mapArray[0].length);
 
@@ -64,14 +64,146 @@ public class Window extends JFrame implements ActionListener {
 
         timer = new Timer(500, this);
         timer.start();
-
     }
 
     public void generateRoadNetwork() {
-        for (int i = 0; i < this.mapArray.length; i++) {
-            for (int j = 0; j < this.mapArray[0].length; j++) {
+        // Precentages to spawn different
+        double chanceOfTurn = 0.12;
 
+        for (int y = 0; y < this.mapArray.length; y++) {
+            for (int x = 0; x < this.mapArray[0].length; x++) {
+                Terrain terrain = new Terrain(y, x);
+                tilesList.add(terrain);
+                // this.add(terrain);
             }
+        }
+
+        int startY = (int) Math.floor(Math.random() * mapArray.length);
+        int startX = (int) Math.floor(Math.random() * mapArray[0].length);
+        Road currentRoad = new Road(startY, startX, "right");
+        String dir = "right";
+
+        this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(startY, startX)), currentRoad);
+        for (int i = 0; i < 200; i++) {
+
+            dir = availableDirection(dir, startY, startX);
+            if (dir.equals("none")) break;
+
+            switch (dir) {
+                case "right" -> startX++;
+                case "down" -> startY++;
+                case "left" -> startX--;
+                case "up" -> startY--;
+            }
+
+            System.out.println(dir);
+
+
+            currentRoad = new Road(startY, startX, dir);
+            this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(startY, startX)), currentRoad);
+        }
+    }
+
+    public String availableDirection(String currentDir, int y, int x) {
+        ArrayList<String> directions = new ArrayList<>();
+        String[] availableDirections = {"right", "down", "left", "up"};
+
+
+        for (String dir : availableDirections) {
+            System.out.println(dir);
+            switch (dir) {
+                case "right" -> {
+                    if (x + 1 < mapArray[0].length) {
+                        if (!(getTileFromPosition(y, x + 1) instanceof Road)) {
+                            directions.add("right");
+                        }
+                    }
+                }
+                case "down" -> {
+                    if (y + 1 < mapArray.length) {
+                        if (!(getTileFromPosition(y + 1, x) instanceof Road)) {
+                            directions.add("down");
+                        }
+                    }
+                }
+                case "left" -> {
+                    if (x - 1 > 0) {
+                        if (!(getTileFromPosition(y, x - 1) instanceof Road)) {
+                            directions.add("left");
+                        }
+                    }
+                }
+                case "up" -> {
+                    if (y - 1 > 0) {
+                        if (!(getTileFromPosition(y - 1, x) instanceof Road)) {
+                            directions.add("up");
+                        }
+                    }
+                }
+            }
+        }
+
+        double percentToTurn = 0.1;
+
+        if (directions.contains(currentDir) && Math.random() > percentToTurn) {
+            if (currentDir.equals("right") && getTileFromPosition(y, x - 1) instanceof Road)
+                ((Road) getTileFromPosition(y, x - 1)).setDirection("right");
+            if (currentDir.equals("down") && getTileFromPosition(y - 1, x) instanceof Road)
+                ((Road) getTileFromPosition(y - 1, x)).setDirection("down");
+            if (currentDir.equals("left") && getTileFromPosition(y, x + 1) instanceof Road)
+                ((Road) getTileFromPosition(y, x + 1)).setDirection("left");
+            if (currentDir.equals("up") && getTileFromPosition(y + 1, x) instanceof Road)
+                ((Road) getTileFromPosition(y + 1, x)).setDirection("up");
+            return currentDir;
+        } else {
+            directions.remove(currentDir);
+        }
+        if (directions.isEmpty()) return "none";
+
+        String choosedDir = directions.get((int) (Math.random() * directions.size()));
+        if (choosedDir.equals("right") && getTileFromPosition(y, x - 1) instanceof Road)
+            ((Road) getTileFromPosition(y, x - 1)).setDirection("right");
+        if (choosedDir.equals("down") && getTileFromPosition(y - 1, x) instanceof Road)
+            ((Road) getTileFromPosition(y - 1, x)).setDirection("down");
+        if (choosedDir.equals("left") && getTileFromPosition(y, x + 1) instanceof Road)
+            ((Road) getTileFromPosition(y, x + 1)).setDirection("left");
+        if (choosedDir.equals("up") && getTileFromPosition(y + 1, x) instanceof Road)
+            ((Road) getTileFromPosition(y + 1, x)).setDirection("up");
+        return choosedDir;
+
+    }
+
+    public String getRandomDirection(String currentDir) {
+        String[] possibleDirections = {"right", "down", "left", "up"};
+        ArrayList<String> directions = new ArrayList<>();
+        directions.add("right");
+        directions.add("down");
+        directions.add("left");
+        directions.add("up");
+
+        directions.remove(currentDir);
+        return directions.get((int) Math.floor(Math.random() * 3));
+
+    }
+
+    public boolean isCollidingWithRoad(int y, int x) {
+        if (getTileFromPosition(y, x) instanceof Road) return true;
+        else return false;
+    }
+
+    public boolean isCollidingWithWall(int y, int x) {
+        if (y >= mapArray.length) return true;
+        else if (y < 0) return true;
+        else if (x >= mapArray[0].length) return true;
+        else if (x < 0) return true;
+
+
+        return false;
+    }
+
+    public void genMap() {
+        for (Tile tile : this.tilesList) {
+            this.add(tile);
         }
     }
 
@@ -153,7 +285,7 @@ public class Window extends JFrame implements ActionListener {
     }
 
     public void update() {
-        System.out.println("frame");
+        this.frames++;
         for (Car car : carList) {
             System.out.println(car.getX());
             car.move();

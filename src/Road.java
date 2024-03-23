@@ -4,12 +4,14 @@ import java.awt.geom.Line2D;
 
 public class Road extends Tile {
 
+    static int amountOfRoads = 0;
     Object onRoad;
 
     private String direction;
     private boolean isOccupied = false;
 
     public Road(int yPos, int xPos, String direction) {
+
         super(yPos, xPos);
         this.direction = direction;
 
@@ -18,10 +20,14 @@ public class Road extends Tile {
 
     }
 
+
+
     public void paintComponent(Graphics g) {
+
         g.setColor(new Color(48, 54, 46));
+
         g.fillRect(0, 0, 20, 20);
-    g.setColor(Color.yellow);
+        g.setColor(Color.yellow);
         switch (this.direction) {
             case "right" -> {
                 g.fillRect(15, 8, 5, 4);
@@ -46,6 +52,7 @@ public class Road extends Tile {
 
     }
 
+
     public Road(int yPos, int xPos, Car car) {
         super(yPos, xPos);
         this.setBackground(Color.gray);
@@ -58,6 +65,14 @@ public class Road extends Tile {
         this.add(car);
         this.isOccupied = true;
 
+    }
+
+    public String getDirection() {
+        return this.direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public Object getOnRoad() {
