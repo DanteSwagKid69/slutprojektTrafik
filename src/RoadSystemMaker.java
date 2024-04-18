@@ -59,7 +59,7 @@ public class RoadSystemMaker {
 
             currentRoad = new Road(yPos, xPos, currentDir);
             if (tilesList.get(this.tilesList.indexOf(getTileFromPosition(yPos, xPos))) instanceof Road) {
-                this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(yPos, xPos)), new Intersection(yPos, xPos, currentDir, this));
+               // this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(yPos, xPos)), new Intersection(yPos, xPos, currentDir, this));
                 roads++;
             } else {
                 this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(yPos, xPos)), currentRoad);
@@ -122,7 +122,8 @@ public class RoadSystemMaker {
         return directions.get((int) (Math.random() * directions.size()));
     }
 
-    public Tile getTileFromPosition(int yPosition, int xPosition) {return tilesList.get((this.columns * yPosition) + xPosition);
+    public Tile getTileFromPosition(int yPosition, int xPosition) {
+        return tilesList.get((this.columns * yPosition) + xPosition);
     }
 
     public void addTilesToWindow(Window window) {

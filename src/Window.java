@@ -12,6 +12,7 @@ public class Window extends JFrame implements ActionListener {
     Timer timer;
 
     RoadSystemMaker roadSystem = new RoadSystemMaker();
+    TraficMap trafficMap = new TraficMap();
     final int pixelSize = 20;
     int frames = 0;
 
@@ -20,12 +21,12 @@ public class Window extends JFrame implements ActionListener {
 
     public Window() {
         //roadSystem.addTilesToWindow(this);
-
+        trafficMap.addTilesToWindow(this);
         this.setTitle("Trafic Sim"); // Sätter en text på rutan
-        this.setBounds(0, 0, roadSystem.getColumns() * pixelSize, roadSystem.getRows() * pixelSize); // Sätter position och storlek
+        this.setBounds(0, 0, trafficMap.getColumns() * pixelSize, trafficMap.getRows() * pixelSize); // Sätter position och storlek
         this.setResizable(false); // gör att vi inte får ändra storleken
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        GridLayout flow = new GridLayout(roadSystem.getRows(), roadSystem.getColumns(), 0, 0);
+        GridLayout flow = new GridLayout(trafficMap.getRows(), trafficMap.getColumns(), 0, 0);
         this.setLayout(flow);
         this.setVisible(true);  // gör den synlig
 
