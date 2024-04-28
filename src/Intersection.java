@@ -64,36 +64,53 @@ public class Intersection extends Road {
         this.directions.add("left");
 
         // Check which ways is out of bounds and remove those directions
-        if (xPos + 1 > this.traficMap.getColumns()) directions.remove("right");
-        if (yPos + 1 > this.traficMap.getRows()) directions.remove("down");
-        if (xPos - 1 <= 0) directions.remove("left");
-        if (yPos - 1 <= 0) directions.remove("up");
+        if (xPos + 1 > this.traficMap.getColumns()) this.directions.remove("right");
+        if (yPos + 1 > this.traficMap.getRows()) this.directions.remove("down");
+        if (xPos - 1 <= 0) this.directions.remove("left");
+        if (yPos - 1 <= 0) this.directions.remove("up");
 
-        // Check if the direction of the roads on each side is pointing at this intersection
-        if (directions.contains("up")) {
-            Tile targetTile = this.traficMap.getTileFromPosition(yPos - 1, xPos);
+        // Variables that are used in the next part depending on the current direction
+        String oppositeDir = "";
+        int yChange = 0;
+        int xChange = 0;
+        ArrayList<String> removedDirections = new ArrayList<>(); // Avoids comodification
+        for (String dir: this.directions) {
+            switch (dir) {
+                case "up" -> {
+                    oppositeDir = "down";
+                    yChange = -1;
+                    xChange = 0;
+                }
+                case "right" -> {
+                    oppositeDir = "left";
+                    yChange = 0;
+                    xChange = 1;
+                }
+                case "down" -> {
+                    oppositeDir = "up";
+                    yChange = 1;
+                    xChange = 0;
+                }
+                case "left" -> {
+                    oppositeDir = "right";
+                    yChange = 0;
+                    xChange = -1;
+                }
+            }
+
+            // Check if the direction of the roads on each side is pointing at this intersection
+            Tile targetTile = this.traficMap.getTileFromPosition(Integer.sum(yPos, yChange), Integer.sum(xPos, xChange));
             if (targetTile instanceof Road) {
-                if (((Road) targetTile).getDirection().equals("down")) this.directions.remove("up");
-            } else directions.remove("up");
+                if (((Road) targetTile).getDirection().equals(oppositeDir)) removedDirections.add(dir);
+            } else removedDirections.add(dir);
         }
-        if (directions.contains("right")) {
-            Tile targetTile = this.traficMap.getTileFromPosition(yPos, xPos + 1);
-            if (targetTile instanceof Road) {
-                if (((Road) targetTile).getDirection().equals("left")) this.directions.remove("right");
-            } else directions.remove("right");
+
+        // Remove all directions from the removedDirections array
+        for(String dir: removedDirections) {
+            this.directions.remove(dir);
         }
-        if (directions.contains("down")) {
-            Tile targetTile = this.traficMap.getTileFromPosition(yPos + 1, xPos);
-            if (targetTile instanceof Road) {
-                if (((Road) targetTile).getDirection().equals("up")) this.directions.remove("down");
-            } else directions.remove("down");
-        }
-        if (directions.contains("left")) {
-            Tile targetTile = this.traficMap.getTileFromPosition(yPos, xPos - 1);
-            if (targetTile instanceof Road) {
-                if (((Road) targetTile).getDirection().equals("right")) this.directions.remove("left");
-            } else directions.remove("left");
-        }
+
+
 
 
     }
