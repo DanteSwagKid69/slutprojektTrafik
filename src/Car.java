@@ -17,6 +17,24 @@ public class Car extends JPanel {
         carsList.add(this);
     }
 
+    public void drive() {
+
+        Road nextRoad = this.currentRoad.getNextRoad(window.trafficMap);
+
+        // Calls method depending on if nextRoad is intersection or oneway road
+        if (this.currentRoad.getNextRoad(window.trafficMap) instanceof Intersection) driveOnIntersection(nextRoad);
+        else driveOnRoad(nextRoad);
+    }
+
+    public void driveOnRoad(Road nextRoad) {
+        this.currentRoad.removeCar();
+        nextRoad.add(this);
+        this.currentRoad = nextRoad;
+    }
+
+    public void driveOnIntersection(Road nextIntersection) {
+
+    }
     public void move(Window window) {
         System.out.println("move");
         RoadSystemMaker roadSystem = window.getRoadSystem();

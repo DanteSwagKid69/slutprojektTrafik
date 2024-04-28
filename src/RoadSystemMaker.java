@@ -7,9 +7,12 @@ public class RoadSystemMaker {
     final private int rows = mapArray.length;
     final private int columns = mapArray[0].length;
 
+    Window window;
     ArrayList<Tile> tilesList = new ArrayList<>();
 
-    public RoadSystemMaker() {
+    public RoadSystemMaker(Window window) {
+
+        this.window = window;
 
         createTerrain();
         generateRoads();
@@ -38,7 +41,7 @@ public class RoadSystemMaker {
         String currentDir = "right";
 
         // Place new road
-        Road currentRoad = new Road(yPos, xPos, currentDir);
+        Road currentRoad = new Road(yPos, xPos, currentDir, new TraficMap(window));
         this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(yPos, xPos)), currentRoad);
 
         // lastPlacedRoad = the road that was just placed
@@ -57,7 +60,7 @@ public class RoadSystemMaker {
         while (roads < 1000) {
             currentDir = getAvailableDirections(yPos, xPos, lastDir);
 
-            currentRoad = new Road(yPos, xPos, currentDir);
+            currentRoad = new Road(yPos, xPos, currentDir, window.trafficMap);
             if (tilesList.get(this.tilesList.indexOf(getTileFromPosition(yPos, xPos))) instanceof Road) {
                // this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(yPos, xPos)), new Intersection(yPos, xPos, currentDir, this));
                 roads++;

@@ -6,21 +6,52 @@ public class Road extends Tile {
 
     static int amountOfRoads = 0;
     Object onRoad;
-
     private String direction;
     private boolean isOccupied = false;
+    TraficMap traficMap;
 
-    public Road(int yPos, int xPos, String direction) {
-
+    public Road(int yPos, int xPos, String direction, TraficMap traficMap) {
         super(yPos, xPos);
+        this.traficMap = traficMap;
+
         this.direction = direction;
-
         this.setLayout(null);
-
-
     }
 
 
+    public Road getNextRoad(TraficMap traficMap) {
+        int yChange = 0;
+        int xChange = 0;
+        switch (this.direction) {
+            case "up" -> {
+                yChange = -1;
+                xChange = 0;
+            }
+            case "right" -> {
+                yChange = 0;
+                xChange = 1;
+            }
+            case "down" -> {
+                yChange = 1;
+                xChange = 0;
+            }
+            case "left" -> {
+                yChange = 0;
+                xChange = -1;
+            }
+        }
+        System.out.println("dir: " + this.direction);
+        System.out.println("Coords: " + this.getyPos() + "," + this.getyPos());
+        System.out.println("pos: " + Integer.sum(this.getyPos(), yChange) + "," + Integer.sum(this.getxPos(), xChange));
+
+        Tile targetTile = traficMap.getTileFromPosition(Integer.sum(this.getyPos(), yChange), Integer.sum(this.getxPos(), xChange));
+
+        // Handles error
+        if (!(targetTile instanceof Road))
+            throw new Error("There is no road to the " + direction + " of this car | coords:  " + this.getyPos() + " , " + this.getxPos());
+
+        return (Road) targetTile;
+    }
 
     public void paintComponent(Graphics g) {
 
@@ -53,13 +84,6 @@ public class Road extends Tile {
     }
 
 
-    public Road(int yPos, int xPos, Car car) {
-        super(yPos, xPos);
-        this.setBackground(Color.gray);
-        this.setLayout(null);
-        addCar(car);
-    }
-
     public void addCar(Car car) {
         this.onRoad = car;
         this.add(car);
@@ -80,6 +104,7 @@ public class Road extends Tile {
     }
 
     public void removeCar() {
+        this.onRoad = null;
         this.isOccupied = false;
     }
 

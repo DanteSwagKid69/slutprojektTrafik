@@ -7,7 +7,7 @@ public class Intersection extends Road {
     TraficMap traficMap;
 
     public Intersection(int yPos, int xPos, TraficMap traficMap) {
-        super(yPos, xPos, "right");
+        super(yPos, xPos, "right", traficMap);
         this.traficMap = traficMap;
         //    this.currentDir = currentDir;
 
@@ -74,7 +74,7 @@ public class Intersection extends Road {
         int yChange = 0;
         int xChange = 0;
         ArrayList<String> removedDirections = new ArrayList<>(); // Avoids comodification
-        for (String dir: this.directions) {
+        for (String dir : this.directions) {
             switch (dir) {
                 case "up" -> {
                     oppositeDir = "down";
@@ -106,13 +106,14 @@ public class Intersection extends Road {
         }
 
         // Remove all directions from the removedDirections array
-        for(String dir: removedDirections) {
+        for (String dir : removedDirections) {
             this.directions.remove(dir);
         }
 
 
-
-
     }
 
+    public ArrayList<String> getDirections() {
+        return this.directions;
+    }
 }

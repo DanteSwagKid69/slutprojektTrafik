@@ -11,8 +11,8 @@ public class Window extends JFrame implements ActionListener {
     ArrayList<Car> carList = new ArrayList<>();
     Timer timer;
 
-    RoadSystemMaker roadSystem = new RoadSystemMaker();
-    TraficMap trafficMap = new TraficMap();
+    RoadSystemMaker roadSystem = new RoadSystemMaker(this);
+    TraficMap trafficMap = new TraficMap(this);
     final int pixelSize = 20;
     int frames = 0;
 
@@ -47,7 +47,7 @@ public class Window extends JFrame implements ActionListener {
         this.frames++;
         for (Car car : carList) {
             System.out.println(car.getX());
-            car.move(this);
+            car.drive();
         }
 
     }
