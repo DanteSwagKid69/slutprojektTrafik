@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 public class Car extends JPanel {
 
+    private float SpeedPercent;
+
+    // Static list that stores all cars
     public static ArrayList<Car> carsList = new ArrayList<>();
-    private Window window;
+    private final Window window;
     Road currentRoad;
 
     public Car(Window window, Road currentRoad) {
@@ -17,60 +20,24 @@ public class Car extends JPanel {
         carsList.add(this);
     }
 
+    // Method that controls the driving
     public void drive() {
 
-        Road nextRoad = this.currentRoad.getNextRoad(window.trafficMap);
+        Road nextRoad;
 
-        // Calls method depending on if nextRoad is intersection or oneway road
-        if (this.currentRoad.getNextRoad(window.trafficMap) instanceof Intersection) driveOnIntersection(nextRoad);
-        else driveOnRoad(nextRoad);
+        // Use different function depending on if current tile is an intersection or road
+        if (this.currentRoad instanceof Intersection) {
+            nextRoad = ((Intersection) this.currentRoad).getNextRoadIntersection();
+        } else nextRoad = this.currentRoad.getNextRoad(window.trafficMap);
+
+        driveOnRoad(nextRoad);
     }
 
+    // Adds this car on next road and removes it from the current road.
     public void driveOnRoad(Road nextRoad) {
+        if (nextRoad.getIsOccupied()) return;
         this.currentRoad.removeCar();
         nextRoad.add(this);
         this.currentRoad = nextRoad;
-    }
-
-    public void driveOnIntersection(Road nextIntersection) {
-
-    }
-    public void move(Window window) {
-        System.out.println("move");
-        RoadSystemMaker roadSystem = window.getRoadSystem();
-        int yPos = this.currentRoad.getyPos();
-        int xPos = this.currentRoad.getxPos();
-
-        switch (currentRoad.getDirection()) {
-            case "right" -> {
-                if (!(roadSystem.getTileFromPosition(yPos, xPos + 1) instanceof Terrain)) {
-                    this.currentRoad = (Road) roadSystem.getTileFromPosition(yPos, xPos + 1);
-                    //((Road) roadSystem.getTileFromPosition(yPos, xPos + 1)).addCar(this);
-                }
-            }
-            case "down" -> {
-                if (!(roadSystem.getTileFromPosition(yPos + 1, xPos) instanceof Terrain)) {
-                    this.currentRoad = (Road) roadSystem.getTileFromPosition(yPos + 1, xPos);
-                    //((Road) roadSystem.getTileFromPosition(yPos + 1, xPos)).addCar(this);
-                }
-            }
-            case "left" -> {
-                if (!(roadSystem.getTileFromPosition(yPos, xPos - 1) instanceof Terrain)) {
-                    this.currentRoad = (Road) roadSystem.getTileFromPosition(yPos, xPos - 1);
-                    //((Road) roadSystem.getTileFromPosition(yPos, xPos - 1)).addCar(this);
-                }
-            }
-            case "up" -> {
-                if (!(roadSystem.getTileFromPosition(yPos - 1, xPos) instanceof Terrain)) {
-                    this.currentRoad = (Road) roadSystem.getTileFromPosition(yPos - 1, xPos);
-                    //((Road) roadSystem.getTileFromPosition(yPos - 1, xPos)).addCar(this);
-                }
-            }
-        }
-        if (currentRoad.getIsOccupied()) return;
-        this.currentRoad.addCar(this);
-        this.currentRoad.removeCar();
-
-
     }
 }

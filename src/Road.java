@@ -4,61 +4,55 @@ import java.awt.geom.Line2D;
 
 public class Road extends Tile {
 
-    static int amountOfRoads = 0;
+    // Stores the car that is on this road
     Object onRoad;
+
+    // Stores the direction of the road
     private String direction;
+
+    // Stores if it is a car on the road or not
     private boolean isOccupied = false;
     TraficMap traficMap;
 
     public Road(int yPos, int xPos, String direction, TraficMap traficMap) {
         super(yPos, xPos);
         this.traficMap = traficMap;
-
         this.direction = direction;
         this.setLayout(null);
     }
 
+    // Gets the next road depending on this direction
 
     public Road getNextRoad(TraficMap traficMap) {
         int yChange = 0;
         int xChange = 0;
+
+        // Variables that are used in the next part depending on the current direction
         switch (this.direction) {
-            case "up" -> {
-                yChange = -1;
-                xChange = 0;
-            }
-            case "right" -> {
-                yChange = 0;
-                xChange = 1;
-            }
-            case "down" -> {
-                yChange = 1;
-                xChange = 0;
-            }
-            case "left" -> {
-                yChange = 0;
-                xChange = -1;
-            }
+            case "up" -> yChange = -1;
+            case "right" -> xChange = 1;
+            case "down" -> yChange = 1;
+            case "left" -> xChange = -1;
         }
+
+        // Debug
         System.out.println("dir: " + this.direction);
-        System.out.println("Coords: " + this.getyPos() + "," + this.getyPos());
+        System.out.println("Coords: " + this.getyPos() + "," + this.getxPos());
         System.out.println("pos: " + Integer.sum(this.getyPos(), yChange) + "," + Integer.sum(this.getxPos(), xChange));
 
-        Tile targetTile = traficMap.getTileFromPosition(Integer.sum(this.getyPos(), yChange), Integer.sum(this.getxPos(), xChange));
-
-        // Handles error
-        if (!(targetTile instanceof Road))
-            throw new Error("There is no road to the " + direction + " of this car | coords:  " + this.getyPos() + " , " + this.getxPos());
-
-        return (Road) targetTile;
+        return (Road) traficMap.getTileFromPosition(Integer.sum(this.getyPos(), yChange), Integer.sum(this.getxPos(), xChange));
     }
 
+
+    // Paints the road
     public void paintComponent(Graphics g) {
 
         g.setColor(new Color(48, 54, 46));
 
         g.fillRect(0, 0, 20, 20);
         g.setColor(Color.yellow);
+
+        // Paints the road depending on direction
         switch (this.direction) {
             case "right" -> {
                 g.fillRect(15, 8, 5, 4);
@@ -78,40 +72,28 @@ public class Road extends Tile {
             }
 
         }
-        g.setColor(Color.yellow);
-
-
     }
 
 
+    // Adds car
     public void addCar(Car car) {
         this.onRoad = car;
         this.add(car);
         this.isOccupied = true;
-
     }
 
+    // Returns direction
     public String getDirection() {
         return this.direction;
     }
 
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
-
-    public Object getOnRoad() {
-        return onRoad;
-    }
-
+    // Removes car
     public void removeCar() {
         this.onRoad = null;
         this.isOccupied = false;
     }
 
-    public void setOccupied(boolean occupied) {
-        this.isOccupied = occupied;
-    }
-
+    // Returns if its occupied
     public boolean getIsOccupied() {
         return isOccupied;
     }

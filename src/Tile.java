@@ -2,8 +2,8 @@ import javax.swing.*;
 
 abstract public class Tile extends JPanel {
 
-    private int yPos;
-    private int xPos;
+    private final int yPos;
+    private final int xPos;
 
 
     public Tile(int yPos, int xPos) {

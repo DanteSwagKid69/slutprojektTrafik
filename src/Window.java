@@ -2,21 +2,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Array;
 import java.util.ArrayList;
 
 public class Window extends JFrame implements ActionListener {
 
-
+    // List that stores all cars
     ArrayList<Car> carList = new ArrayList<>();
-    Timer timer;
-
+    //Timer to make framerate work
+     Timer timer;
+    // Makes new roadsystemmaker
     RoadSystemMaker roadSystem = new RoadSystemMaker(this);
+    // Makes new trafficmap
     TraficMap trafficMap = new TraficMap(this);
+    // Declares the pixel size || the tile size
     final int pixelSize = 20;
-    int frames = 0;
-
-
 
 
     public Window() {
@@ -30,21 +29,18 @@ public class Window extends JFrame implements ActionListener {
         this.setLayout(flow);
         this.setVisible(true);  // gör den synlig
 
+        // Creates new timer and starts it
         timer = new Timer(100, this);
         timer.start();
 
-        for (Tile tile: this.roadSystem.getTilesList()) {
-            if (tile instanceof Road && Math.random() < 0.05) {
-                Car newCar = new Car(this, (Road) tile);
-                ((Road) tile).addCar(newCar);
-                this.carList.add(newCar);
-            }
-        }
+
 
     }
 
+    // Update method
     public void update() {
-        this.frames++;
+
+        // Makes every car drive
         for (Car car : carList) {
             System.out.println(car.getX());
             car.drive();
@@ -52,19 +48,16 @@ public class Window extends JFrame implements ActionListener {
 
     }
 
-
+    //Returns roadsystem
     public RoadSystemMaker getRoadSystem() {
         return this.roadSystem;
     }
 
+    // Happens everytime the timer updates
     @Override
     public void actionPerformed(ActionEvent e) {
         update();
         repaint();
-    }
-
-    public Window getWindow() {
-        return this;
     }
 
 }

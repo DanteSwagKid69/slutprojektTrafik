@@ -3,34 +3,34 @@ import java.util.ArrayList;
 
 public class Intersection extends Road {
 
+    // List that holds all available directions
     ArrayList<String> directions = new ArrayList<>();
     TraficMap traficMap;
 
     public Intersection(int yPos, int xPos, TraficMap traficMap) {
         super(yPos, xPos, "right", traficMap);
+
         this.traficMap = traficMap;
-        //    this.currentDir = currentDir;
-
+        // Fills the directions list with all available directions
         getAvailableDirections(yPos, xPos);
-
         this.setLayout(null);
     }
 
+    // Returns random direction from directions list
     @Override
     public String getDirection() {
         return this.directions.get((int) (Math.random() * directions.size()));
     }
 
+    // Paints the lines on the road
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         g.setColor(new Color(48, 54, 46));
-
         g.fillRect(0, 0, 20, 20);
-
         g.setColor(Color.pink);
 
+        // Paints differently depending on directions
         for (String dir : this.directions) {
             switch (dir) {
                 case "right" -> {
@@ -113,7 +113,25 @@ public class Intersection extends Road {
 
     }
 
-    public ArrayList<String> getDirections() {
-        return this.directions;
+    // Returns next road depending on available directions
+    public Road getNextRoadIntersection() {
+        int yChange = 0;
+        int xChange = 0;
+        String dir = this.getDirection();
+        // Variables that are used in the next part depending on the current direction
+        switch (dir) {
+            case "up" -> yChange = -1;
+            case "right" -> xChange = 1;
+            case "down" -> yChange = 1;
+            case "left" -> xChange = -1;
+        }
+
+        // Debug
+        System.out.println("dir: " + dir);
+        System.out.println("Coords: " + this.getyPos() + "," + this.getxPos());
+        System.out.println("pos: " + Integer.sum(this.getyPos(), yChange) + "," + Integer.sum(this.getxPos(), xChange));
+
+        // Returns road
+        return (Road) traficMap.getTileFromPosition(Integer.sum(this.getyPos(), yChange), Integer.sum(this.getxPos(), xChange));
     }
 }
