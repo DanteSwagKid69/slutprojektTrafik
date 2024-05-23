@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Window extends JFrame implements ActionListener {
 
@@ -16,7 +15,7 @@ public class Window extends JFrame implements ActionListener {
     public TraficMap trafficMap = new TraficMap(this);
     // Declares the pixel size || the tile size
     public final int pixelSize = 20;
-    Screen menu = new Screen(this);
+    Screen menu = new MenuScreen(this);
 
     public Window() {
         this.setTitle("Trafic Sim"); // Sätter en text på rutan
@@ -28,10 +27,6 @@ public class Window extends JFrame implements ActionListener {
 
         // Creates new timer
         timer = new Timer(100, this);
-
-
-
-
     }
 
     // Starts the simulator

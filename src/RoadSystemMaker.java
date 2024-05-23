@@ -62,7 +62,7 @@ public class RoadSystemMaker {
 
             currentRoad = new Road(yPos, xPos, currentDir, window.trafficMap);
             if (tilesList.get(this.tilesList.indexOf(getTileFromPosition(yPos, xPos))) instanceof Road) {
-               // this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(yPos, xPos)), new Intersection(yPos, xPos, currentDir, this));
+                //this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(yPos, xPos)), new Intersection(yPos, xPos, currentDir, this));
                 roads++;
             } else {
                 this.tilesList.set(this.tilesList.indexOf(getTileFromPosition(yPos, xPos)), currentRoad);
