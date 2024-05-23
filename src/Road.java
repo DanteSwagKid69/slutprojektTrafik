@@ -49,7 +49,7 @@ public class Road extends Tile {
 
         g.setColor(new Color(48, 54, 46));
 
-        g.fillRect(0, 0, 20, 20);
+        g.fillRect(0, 0, 1000, 1000);
         g.setColor(Color.yellow);
 
         // Paints the road depending on direction

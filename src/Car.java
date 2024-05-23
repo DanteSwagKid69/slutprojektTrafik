@@ -14,7 +14,7 @@ public class Car extends JPanel {
     public Car(Window window, Road currentRoad) {
         this.window = window;
         this.setLayout(null);
-        this.setSize(10, 10);
+        this.setSize(window.pixelSize / 2, window.pixelSize / 2);
         this.setBackground(new Color((int) Math.floor(Math.random() * 244), (int) Math.floor(Math.random() * 244), (int) Math.floor(Math.random() * 244)));
         this.currentRoad = currentRoad;
         carsList.add(this);
